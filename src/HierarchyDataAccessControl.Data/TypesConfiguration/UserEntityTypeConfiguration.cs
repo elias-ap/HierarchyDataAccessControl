@@ -11,20 +11,22 @@ using System.Threading.Tasks;
 
 namespace HierarchyDataAccessControl.Data.TypesConfiguration
 {
-    public class HierarchyNodeTypeEntityTypeConfiguration : IEntityTypeConfiguration<HierarchyNodeType>
+    public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<HierarchyNodeType> builder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
             builder
-                .ToTable("HierarchyNodeTypes");
+                .ToTable("Users");
 
             builder
                 .HasKey(e => e.Id);
 
             builder
-                .Property(e => e.Description)
-                .IsRequired()
-                .HasMaxLength(50);
+                .Property(e => e.Name)
+                .IsRequired();
+
+            builder
+                .Ignore(e => e.Groups);
         }
     }
 }

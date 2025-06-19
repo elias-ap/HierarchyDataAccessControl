@@ -4,6 +4,7 @@ using HierarchyDataAccessControl.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HierarchyDataAccessControl.Data.Migrations
 {
     [DbContext(typeof(HierarchyDataAccessContext))]
-    partial class HierarchyDataAccessContextModelSnapshot : ModelSnapshot
+    [Migration("20250619204927_add_users_on_database_and_set_table_names_in_plural")]
+    partial class add_users_on_database_and_set_table_names_in_plural
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

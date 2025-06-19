@@ -16,7 +16,7 @@ namespace HierarchyDataAccessControl.Data.TypesConfiguration
         public void Configure(EntityTypeBuilder<HierarchyNode> builder)
         {
             builder
-                .ToTable("HierarchyNode");
+                .ToTable("HierarchyNodes");
 
             builder
                 .HasKey(e => e.Id);
