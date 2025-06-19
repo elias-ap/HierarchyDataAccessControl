@@ -22,19 +22,16 @@ namespace HierarchyDataAccessControl.Data.Migrations
                 principalTable: "HierarchyNode",
                 principalColumn: "Id");
 
-            Guid levelOneParent = Guid.NewGuid();
-            Guid levelTwoParent = Guid.NewGuid();
-            Guid levelThreeParent = Guid.NewGuid();
             migrationBuilder.InsertData(
                 table: "HierarchyNode",
                 columns: [ "Id", "Description", "TypeId", "ParentId"],
                 values: new object[,]
                 {
-                    { levelOneParent, "History Shows with Ms. Gabi", 1, null },
-                    { levelTwoParent, "Marketing", 2, levelOneParent },
-                    { levelThreeParent, "Design Team", 3, levelTwoParent },
-                    { Guid.NewGuid(), "Bruno", 4, levelThreeParent },
-                    { Guid.NewGuid(), "Production and Editing", 2, levelOneParent },
+                    { "bb980eef-476c-4f93-8197-bb748a3e156a", "History Shows with Ms. Gabi", 1, null },
+                    { "a66fe7d8-354a-41fe-8638-a54a5a6cf6c6", "Marketing", 2, "bb980eef-476c-4f93-8197-bb748a3e156a" },
+                    { "696cf49f-76b0-47e8-97d2-3d64eead52e1", "Design Team", 3, "a66fe7d8-354a-41fe-8638-a54a5a6cf6c6" },
+                    { "423d35c3-5ea2-4764-a044-c43a89ac80c2", "Bruno", 4, "696cf49f-76b0-47e8-97d2-3d64eead52e1" },
+                    { "9433bb2a-8642-47b0-814a-eb5784489976", "Production and Editing", 2, "bb980eef-476c-4f93-8197-bb748a3e156a" },
                 });
         }
 

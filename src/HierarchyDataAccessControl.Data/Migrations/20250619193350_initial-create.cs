@@ -51,13 +51,13 @@ namespace HierarchyDataAccessControl.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "HierarchyNodeType",
-                columns: ["Description"],
+                columns: ["Id", "Description"],
                 values: new object[,]
                 {
-                    { "Company" },
-                    { "Department" },
-                    { "Team" },
-                    { "Employee" },
+                    { 1, "Company" },
+                    { 2, "Department" },
+                    { 3, "Team" },
+                    { 4, "Employee" },
                 });
         }
 

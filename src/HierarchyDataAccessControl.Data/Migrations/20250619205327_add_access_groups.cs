@@ -28,8 +28,8 @@ namespace HierarchyDataAccessControl.Data.Migrations
                 columns: ["Id", "Description"],
                 values: new object[,]
                 {
-                   { Guid.NewGuid(), "Global Managers" },
-                   { Guid.NewGuid(), "Technology Information" }
+                   { "2d30fe1c-b744-4f95-bd2a-89b2c0f3725b", "Global Managers" },
+                   { "b23fa5d5-5dde-4b96-a393-6316ff5377a3", "Technology Information" }
                 });
         }
 

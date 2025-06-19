@@ -26,7 +26,34 @@ namespace HierarchyDataAccessControl.Data.TypesConfiguration
                 .IsRequired();
 
             builder
-                .Ignore(e => e.Groups);
+                .HasMany(e => e.Groups)
+                .WithMany()
+                .UsingEntity<UserAccessGroup>(
+                (uag) =>
+                {
+                    uag
+                    .ToTable("UserAccessGroup");
+
+                    uag
+                    .HasKey(nameof(UserAccessGroup.UserId), nameof(UserAccessGroup.AccessGroupId));
+
+                    uag
+                    .Property(e => e.UserId);
+
+                    uag
+                    .Property(e => e.AccessGroupId);
+
+                    uag
+                    .HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId);
+
+                    uag
+                    .HasOne<AccessGroup>()
+                    .WithMany()
+                    .HasForeignKey(e => e.AccessGroupId);
+                }
+                );
         }
     }
 }

@@ -14,6 +14,7 @@ namespace HierarchyDataAccessControl.Data
     {
         public DbSet<HierarchyNode> Nodes { get; set; }
         public DbSet<HierarchyNodeType> Types { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public HierarchyDataAccessContext(DbContextOptions<HierarchyDataAccessContext> options) : base(options) { }
 
@@ -71,5 +72,19 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
+        public IEnumerable<User> GetAllUsers()
+        {
+            try
+            {
+                return Users
+                    .Include(u => u.Groups)
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

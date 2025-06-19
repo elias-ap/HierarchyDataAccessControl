@@ -87,10 +87,10 @@ namespace HierarchyDataAccessControl.Data.Migrations
                 columns: ["Id", "Name"],
                 values: new object[,]
                 {
-                   { Guid.NewGuid(), "Jefferson" },
-                   { Guid.NewGuid(), "Bruna" },
-                   { Guid.NewGuid(), "Geovana" },
-                   { Guid.NewGuid(), "Syrla" }
+                   { "80c17a2a-d2ef-4c48-8d34-adb8830bfcf9", "Jefferson" },
+                   { "1ce73cdd-eb15-4ebf-b036-48caebc44072", "Bruna" },
+                   { "69373c4a-2eb9-4544-a87f-62755d010f60", "Geovana" },
+                   { "a24271b6-2749-4a02-80ff-52b24791fd9d", "Syrla" }
                 });
         }
 

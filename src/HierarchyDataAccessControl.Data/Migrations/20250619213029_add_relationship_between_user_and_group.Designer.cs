@@ -4,6 +4,7 @@ using HierarchyDataAccessControl.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HierarchyDataAccessControl.Data.Migrations
 {
     [DbContext(typeof(HierarchyDataAccessContext))]
-    partial class HierarchyDataAccessContextModelSnapshot : ModelSnapshot
+    [Migration("20250619213029_add_relationship_between_user_and_group")]
+    partial class add_relationship_between_user_and_group
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
