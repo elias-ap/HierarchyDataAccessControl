@@ -41,5 +41,35 @@ namespace HierarchyDataAccessControl.Data
                 throw;
             }
         }
+
+        public IEnumerable<HierarchyNode> GetAllHierarchyNodes()
+        {
+            try
+            {
+                return Nodes
+                    .Include(hn => hn.ChildrenNodes)
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public IEnumerable<HierarchyNode> GetAllFirstLevelHierarchyNodes()
+        {
+            try
+            {
+                return Nodes
+                    .Where(hn => hn.TypeId == 1)
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

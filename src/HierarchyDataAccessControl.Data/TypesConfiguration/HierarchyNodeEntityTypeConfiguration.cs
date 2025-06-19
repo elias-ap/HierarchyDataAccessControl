@@ -24,16 +24,24 @@ namespace HierarchyDataAccessControl.Data.TypesConfiguration
             builder
                 .Property(e => e.Description)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(50)
+                .HasColumnName("Description");
+
+            builder
+                .Property(e => e.ParentId)
+                .HasColumnName("ParentId");
 
             builder
                 .HasOne(e => e.Type)
                 .WithMany()
                 .HasForeignKey(e => e.TypeId);
 
-            builder.Ignore(e => e.ChildrenNodes);
+            builder
+                .HasMany(e => e.ChildrenNodes)
+                .WithOne(e => e.Parent)
+                .HasForeignKey(e => e.ParentId);
+
             builder.Ignore(e => e.Permissions);
-            builder.Ignore(e => e.Parent);
         }
     }
 }
