@@ -2,7 +2,7 @@
 {
     public class UserAccessGroup
     {
-        public Guid IdUser { get; set; }
-        public Guid IdAccessGroup { get; set; }
+        public Guid UserId { get; set; }
+        public Guid AccessGroupId { get; set; }
     }
 }
