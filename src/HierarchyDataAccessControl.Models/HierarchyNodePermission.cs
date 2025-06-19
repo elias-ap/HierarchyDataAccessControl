@@ -1,0 +1,10 @@
+﻿namespace HierarchyDataAccessControl.Models
+{
+    public class HierarchyNodePermission
+    {
+        public Guid Id { get; set; }
+        public Guid IdHierarchyNode { get; set; }
+        public string Value { get; set; }
+        public List<AccessPermission> Access { get; set; }
+    }
+}
