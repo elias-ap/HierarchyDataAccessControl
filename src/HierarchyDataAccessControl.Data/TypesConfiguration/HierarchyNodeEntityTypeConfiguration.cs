@@ -22,14 +22,6 @@ namespace HierarchyDataAccessControl.Data.TypesConfiguration
                 .HasKey(e => e.Id);
 
             builder
-                .HasIndex(e => e.Id)
-                .IsUnique();
-
-            builder
-                .Property(e => e.Id)
-                .IsRequired();
-
-            builder
                 .Property(e => e.Description)
                 .IsRequired()
                 .HasMaxLength(50);

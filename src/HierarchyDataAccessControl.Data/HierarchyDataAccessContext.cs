@@ -13,15 +13,11 @@ namespace HierarchyDataAccessControl.Data
     public class HierarchyDataAccessContext : DbContext
     {
         public DbSet<HierarchyNode> Nodes { get; set; }
-        public HierarchyDataAccessContext(DbContextOptions<HierarchyDataAccessContext> options) : base(options)
-        {
+        public DbSet<HierarchyNodeType> Types { get; set; }
 
-        }
+        public HierarchyDataAccessContext(DbContextOptions<HierarchyDataAccessContext> options) : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,8 +26,20 @@ namespace HierarchyDataAccessControl.Data
                 .ApplyConfigurationsFromAssembly(typeof(HierarchyDataAccessContext).Assembly);
         }
 
-        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder) { }
+
+        public IEnumerable<HierarchyNodeType> GetAllTypes()
         {
+            try
+            {
+                return Types
+                    .AsNoTracking()
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
