@@ -19,12 +19,15 @@ namespace HierarchyDataAccessControl.Test.Integration
         {
             // Arrange
             Guid hierarchyId = new Guid("9433BB2A-8642-47B0-814A-EB5784489976");
+            Guid userId = new Guid("80c17a2a-d2ef-4c48-8d34-adb8830bfcf9");
 
             //  Act
             HierarchyNode node = context
-                .GetNodesHierarchicallyByNodeIdAndUserAccess(hierarchyId, new Guid("80c17a2a-d2ef-4c48-8d34-adb8830bfcf9"));
+                .GetNodesHierarchicallyByNodeIdAndUserAccess(hierarchyId, userId);
 
             // Assert
+            Assert.NotNull(node);
+            Assert.NotEmpty(node.Permissions);
         }
     }
 }

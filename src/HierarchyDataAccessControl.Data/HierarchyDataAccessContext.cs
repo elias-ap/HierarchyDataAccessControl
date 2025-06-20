@@ -94,7 +94,7 @@ namespace HierarchyDataAccessControl.Data
                     .Where(n => n.TypeId == 1)
                     .ToList();
 
-                Parallel.ForEach(nodes, n => LoadChildrenNodes(n));
+                Parallel.ForEach(nodes, n => LoadChildrenNodesRecursively(n));
 
                 return nodes;
 
@@ -105,7 +105,7 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
-        private void LoadChildrenNodes(HierarchyNode node)
+        private void LoadChildrenNodesRecursively(HierarchyNode node)
         {
             node.ChildrenNodes = Nodes
                 .AsNoTracking()
@@ -115,7 +115,7 @@ namespace HierarchyDataAccessControl.Data
 
             foreach (var child in node.ChildrenNodes)
             {
-                LoadChildrenNodes(child);
+                LoadChildrenNodesRecursively(child);
             }
         }
 
@@ -130,7 +130,7 @@ namespace HierarchyDataAccessControl.Data
 
                 if (user is null)
                 {
-                    throw new ObjectNotFoundException("Not found user.");
+                    throw new ObjectNotFoundException("Not found the user.");
                 }
 
                 HierarchyNode? node = Nodes
@@ -139,7 +139,7 @@ namespace HierarchyDataAccessControl.Data
 
                 if (node is null)
                 {
-                    throw new ObjectNotFoundException("Not found node.");
+                    throw new ObjectNotFoundException("Not found the node.");
                 }
 
                 IEnumerable<Guid> groupsIds = user!
@@ -159,7 +159,7 @@ namespace HierarchyDataAccessControl.Data
 
                 if (globalPermission.Any())
                 {
-                    LoadChildrenNodes(node);
+                    LoadChildrenNodesRecursively(node);
                 }
 
                 return node;
