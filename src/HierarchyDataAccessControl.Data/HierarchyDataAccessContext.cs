@@ -162,5 +162,18 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
+        public HierarchyNode AddNode(HierarchyNode node)
+        {
+            try
+            {
+                return Nodes
+                    .Add(node)
+                    .Entity;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
