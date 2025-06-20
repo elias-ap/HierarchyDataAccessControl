@@ -1,12 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HierarchyDataAccessControl.Models;
-using Microsoft.EntityFrameworkCore.Internal;
-using HierarchyDataAccessControl.Data.TypesConfiguration;
+﻿using HierarchyDataAccessControl.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Xml.Linq;
 
 namespace HierarchyDataAccessControl.Data
 {
@@ -48,8 +43,8 @@ namespace HierarchyDataAccessControl.Data
             try
             {
                 return Nodes
-                    .Include(hn => hn.ChildrenNodes)
                     .AsNoTracking()
+                    .Include(hn => hn.ChildrenNodes)
                     .ToList();
             }
             catch (Exception ex)
@@ -62,8 +57,8 @@ namespace HierarchyDataAccessControl.Data
             try
             {
                 return Nodes
-                    .Where(hn => hn.TypeId == 1)
                     .AsNoTracking()
+                    .Where(hn => hn.TypeId == 1)
                     .ToList();
             }
             catch (Exception ex)
@@ -77,8 +72,8 @@ namespace HierarchyDataAccessControl.Data
             try
             {
                 return Users
-                    .Include(u => u.Groups)
                     .AsNoTracking()
+                    .Include(u => u.Groups)
                     .ToList();
             }
             catch (Exception ex)
@@ -86,5 +81,39 @@ namespace HierarchyDataAccessControl.Data
                 throw;
             }
         }
+
+        public IEnumerable<HierarchyNode> GetAllNodesHierarchically()
+        {
+            try
+            {
+                var nodes = Nodes
+                    .AsNoTracking()
+                    .Where(n => n.TypeId == 1)
+                    .ToList();
+
+                Parallel.ForEach(nodes, n => LoadChildrenNodes(n));
+
+                return nodes;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private void LoadChildrenNodes(HierarchyNode node)
+        {
+            node.ChildrenNodes = Nodes
+                .AsNoTracking()
+                .Where(n => n.ParentId == node.Id)
+                .ToList();
+
+            foreach (var child in node.ChildrenNodes)
+            {
+                LoadChildrenNodes(child);
+            }
+        }
+
     }
 }
