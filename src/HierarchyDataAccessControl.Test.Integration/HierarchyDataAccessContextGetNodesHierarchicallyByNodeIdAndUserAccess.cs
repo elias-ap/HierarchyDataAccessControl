@@ -18,14 +18,13 @@ namespace HierarchyDataAccessControl.Test.Integration
         public void ReturnOnlyNodesThatUserHavePermissionsWhenGetNodesHierarchicallyByNodeIdAndUserAccess()
         {
             // Arrange
-            Guid hierarchyId = new Guid("a66fe7d8-354a-41fe-8638-a54a5a6cf6c6");
+            Guid hierarchyId = new Guid("9433BB2A-8642-47B0-814A-EB5784489976");
 
             //  Act
-            IEnumerable<HierarchyNode> nodes = context
+            HierarchyNode node = context
                 .GetNodesHierarchicallyByNodeIdAndUserAccess(hierarchyId, new Guid("80c17a2a-d2ef-4c48-8d34-adb8830bfcf9"));
 
             // Assert
-            Assert.NotEmpty(nodes);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.CodeDom;
+using System.Data.Entity.Core;
 using System.Xml.Linq;
 
 namespace HierarchyDataAccessControl.Data
@@ -108,6 +109,7 @@ namespace HierarchyDataAccessControl.Data
         {
             node.ChildrenNodes = Nodes
                 .AsNoTracking()
+                .Include(n => n.Permissions)
                 .Where(n => n.ParentId == node.Id)
                 .ToList();
 
@@ -117,7 +119,7 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
-        public IEnumerable<HierarchyNode> GetNodesHierarchicallyByNodeIdAndUserAccess(Guid hierarchyNodeId, Guid userId)
+        public HierarchyNode GetNodesHierarchicallyByNodeIdAndUserAccess(Guid hierarchyNodeId, Guid userId)
         {
             try
             {
@@ -128,7 +130,16 @@ namespace HierarchyDataAccessControl.Data
 
                 if (user is null)
                 {
-                    throw new Exception("User not found.");
+                    throw new ObjectNotFoundException("Not found user.");
+                }
+
+                HierarchyNode? node = Nodes
+                    .AsNoTracking()
+                    .FirstOrDefault(n => n.Id == hierarchyNodeId);
+
+                if (node is null)
+                {
+                    throw new ObjectNotFoundException("Not found node.");
                 }
 
                 IEnumerable<Guid> groupsIds = user!
@@ -138,22 +149,20 @@ namespace HierarchyDataAccessControl.Data
                 var userNodePermissions = Permissions
                     .AsNoTracking()
                     .Include(p => p.Accesess)
-                    .Where(p => p.Accesess.Any(a => a.AccessId == user.Id || groupsIds.Contains(a.AccessId)));
-
-                var nodes = Nodes
-                    .AsNoTracking()
-                    .Where(n => n.Id == hierarchyNodeId)
-                    .Join(
-                    userNodePermissions,
-                    o => o.Id,
-                    f => f.HierarchyNodeId,
-                    (node, permission) => node)
+                    .Where(p => p.HierarchyNodeId == node.Id && p.Accesess.Any(a => a.AccessId == user.Id || groupsIds.Contains(a.AccessId)))
                     .ToList();
 
-                // implement global and unique access
-                //Parallel.ForEach(nodes, n => LoadChildrenNodes(n));
+                node.Permissions = userNodePermissions;
 
-                return nodes;
+                var globalPermission = userNodePermissions
+                    .Where(p => p.Accesess.Where(a => a.TypeId == AccessPermissionType.Global).Any());
+
+                if (globalPermission.Any())
+                {
+                    LoadChildrenNodes(node);
+                }
+
+                return node;
 
             }
             catch (Exception ex)

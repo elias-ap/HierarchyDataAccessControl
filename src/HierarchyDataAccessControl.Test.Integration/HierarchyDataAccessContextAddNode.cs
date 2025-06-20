@@ -22,7 +22,7 @@ namespace HierarchyDataAccessControl.Test.Integration
             {
                 Id = Guid.NewGuid(),
                 Description = "ReturnAddedNodeWhenAddNodeOnDatabase",
-                TypeId = (int)HierarchyNodeTypeEnum.Company
+                TypeId = HierarchyNodeType.Company
             };
 
             // Act
