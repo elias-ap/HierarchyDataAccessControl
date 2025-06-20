@@ -6,10 +6,10 @@ using System.Dynamic;
 namespace HierarchyDataAccessControl.Test.Integration
 {
     [Collection(nameof(ContextCollectionFixture))]
-    public class HierarchyDataAccessContextGetAllTypes
+    public class HierarchyDataAccessContextGetAllNodeTypes
     {
         private readonly HierarchyDataAccessContext context;
-        public HierarchyDataAccessContextGetAllTypes(ContextFixture contextFixture)
+        public HierarchyDataAccessContextGetAllNodeTypes(ContextFixture contextFixture)
         {
             context = contextFixture.context;
         }
@@ -18,7 +18,7 @@ namespace HierarchyDataAccessControl.Test.Integration
         public void ReturnAllTypesWhenGetAllTypesFromDatabase()
         {
             // Arrange + Act
-            IEnumerable<HierarchyNodeType> types = context.GetAllTypes();
+            IEnumerable<HierarchyNodeType> types = context.GetAllNodeTypes();
 
             // Assert
             Assert.NotEmpty(types);

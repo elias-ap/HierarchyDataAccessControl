@@ -10,9 +10,10 @@ namespace HierarchyDataAccessControl.Data
     public class HierarchyDataAccessContext : DbContext
     {
         public DbSet<HierarchyNode> Nodes { get; set; }
-        public DbSet<HierarchyNodeType> Types { get; set; }
+        public DbSet<HierarchyNodeType> NodeTypes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<HierarchyNodePermission> Permissions { get; set; }
+        public DbSet<AccessPermission> Accesses { get; set; }
 
         public HierarchyDataAccessContext(DbContextOptions<HierarchyDataAccessContext> options) : base(options) { }
 
@@ -27,11 +28,11 @@ namespace HierarchyDataAccessControl.Data
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder) { }
 
-        public IEnumerable<HierarchyNodeType> GetAllTypes()
+        public IEnumerable<HierarchyNodeType> GetAllNodeTypes()
         {
             try
             {
-                return Types
+                return NodeTypes
                     .AsNoTracking()
                     .ToList();
             }
@@ -55,6 +56,7 @@ namespace HierarchyDataAccessControl.Data
                 throw;
             }
         }
+
         public IEnumerable<HierarchyNode> GetAllFirstLevelHierarchyNodes()
         {
             try
@@ -85,16 +87,16 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
-        public IEnumerable<HierarchyNode> GetAllNodesHierarchically()
+        public async Task<IEnumerable<HierarchyNode>> GetAllNodesHierarchically()
         {
             try
             {
-                var nodes = Nodes
+                var nodes = await Nodes
                     .AsNoTracking()
                     .Where(n => n.TypeId == 1)
-                    .ToList();
+                    .ToListAsync();
 
-                Parallel.ForEach(nodes, n => LoadChildrenNodesRecursively(n));
+                await Parallel.ForEachAsync(nodes, async (n, r) => await LoadChildrenNodesRecursively(n));
 
                 return nodes;
 
@@ -105,17 +107,17 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
-        private void LoadChildrenNodesRecursively(HierarchyNode node)
+        private async Task LoadChildrenNodesRecursively(HierarchyNode node)
         {
-            node.ChildrenNodes = Nodes
+            node.ChildrenNodes = await Nodes
                 .AsNoTracking()
                 .Include(n => n.Permissions)
                 .Where(n => n.ParentId == node.Id)
-                .ToList();
+                .ToListAsync();
 
-            foreach (var child in node.ChildrenNodes)
+            foreach (var item in node.ChildrenNodes)
             {
-                LoadChildrenNodesRecursively(child);
+                await LoadChildrenNodesRecursively(item);
             }
         }
 
@@ -177,6 +179,34 @@ namespace HierarchyDataAccessControl.Data
             {
                 return Nodes
                     .Add(node)
+                    .Entity;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public HierarchyNodePermission AddPermission(HierarchyNodePermission permission)
+        {
+            try
+            {
+                return Permissions
+                    .Add(permission)
+                    .Entity;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public AccessPermission AddAccess(AccessPermission access)
+        {
+            try
+            {
+                return Accesses
+                    .Add(access)
                     .Entity;
             }
             catch (Exception ex)

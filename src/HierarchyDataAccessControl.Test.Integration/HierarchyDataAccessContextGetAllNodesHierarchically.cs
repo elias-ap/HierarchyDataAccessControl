@@ -15,10 +15,10 @@ namespace HierarchyDataAccessControl.Test.Integration
         }
 
         [Fact]
-        public void ReturnNodeHierarchicallyOrganizedWhenGetAllNodesHierarchically()
+        public async Task ReturnNodeHierarchicallyOrganizedWhenGetAllNodesHierarchically()
         {
             // Arrange + Act
-            IEnumerable<HierarchyNode> nodes = context
+            IEnumerable<HierarchyNode> nodes = await context
                 .GetAllNodesHierarchically();
 
             // Assert
