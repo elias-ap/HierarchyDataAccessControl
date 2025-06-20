@@ -47,6 +47,14 @@ namespace HierarchyDataAccessControl.Data.Migrations
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.UpdateData(
+                table: "AccessPermissions",
+                keyColumn: "PermissionId",
+                keyValue: "1e44a378-c24d-4e07-bccc-229cc2fbd0c6",
+                column: "TypeId",
+                value: 1
+                );
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_HierarchyNodePermissions",
                 table: "HierarchyNodePermissions",
@@ -68,6 +76,15 @@ namespace HierarchyDataAccessControl.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessPermissionTypes", x => x.Id);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AccessPermissionTypes",
+                columns: ["Id", "Description"],
+                values: new object[,]
+                {
+                   { 1, "Global" },
+                   { 2, "Unique" },
                 });
 
             migrationBuilder.CreateIndex(
@@ -99,14 +116,6 @@ namespace HierarchyDataAccessControl.Data.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.InsertData(
-                table: "AccessPermissionTypes",
-                columns: ["Id", "Description"],
-                values: new object[,]
-                {
-                   { 1, "Global" },
-                   { 2, "Unique" },
-                });
         }
 
         /// <inheritdoc />
