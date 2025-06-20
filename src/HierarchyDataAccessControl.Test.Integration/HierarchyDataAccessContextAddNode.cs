@@ -36,6 +36,7 @@ namespace HierarchyDataAccessControl.Test.Integration
 
             // Finally
             context.Remove(node);
+            context.SaveChanges();
         }
     }
 }

@@ -9,11 +9,11 @@ namespace HierarchyDataAccessControl.Data
 {
     public class HierarchyDataAccessContext : DbContext
     {
-        public DbSet<HierarchyNode> Nodes { get; set; }
-        public DbSet<HierarchyNodeType> NodeTypes { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<HierarchyNodePermission> Permissions { get; set; }
-        public DbSet<AccessPermission> Accesses { get; set; }
+        private DbSet<HierarchyNode> Nodes { get; set; }
+        private DbSet<HierarchyNodeType> NodeTypes { get; set; }
+        private DbSet<User> Users { get; set; }
+        private DbSet<HierarchyNodePermission> Permissions { get; set; }
+        private DbSet<AccessPermission> Accesses { get; set; }
 
         public HierarchyDataAccessContext(DbContextOptions<HierarchyDataAccessContext> options) : base(options) { }
 
@@ -195,7 +195,7 @@ namespace HierarchyDataAccessControl.Data
 
                 if (globalPermission.Any())
                 {
-                    LoadChildrenNodesRecursivelyAsync(node);
+                    LoadChildrenNodesRecursively(node);
                 }
 
                 return node;
@@ -212,7 +212,9 @@ namespace HierarchyDataAccessControl.Data
             try
             {
                 node = Nodes.Add(node).Entity;
+
                 SaveChanges();
+
                 return node;
             }
             catch (Exception ex)
@@ -225,9 +227,13 @@ namespace HierarchyDataAccessControl.Data
         {
             try
             {
-                return Permissions
+                permission = Permissions
                     .Add(permission)
                     .Entity;
+
+                SaveChanges();
+
+                return permission;
             }
             catch (Exception ex)
             {
@@ -239,9 +245,13 @@ namespace HierarchyDataAccessControl.Data
         {
             try
             {
-                return Accesses
+                access = Accesses
                     .Add(access)
                     .Entity;
+
+                SaveChanges();
+
+                return access;
             }
             catch (Exception ex)
             {
