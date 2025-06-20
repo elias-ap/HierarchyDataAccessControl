@@ -4,6 +4,7 @@ using HierarchyDataAccessControl.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HierarchyDataAccessControl.Data.Migrations
 {
     [DbContext(typeof(HierarchyDataAccessContext))]
-    partial class HierarchyDataAccessContextModelSnapshot : ModelSnapshot
+    [Migration("20250620035210_add_node_permission_relationships")]
+    partial class add_node_permission_relationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,32 +48,9 @@ namespace HierarchyDataAccessControl.Data.Migrations
                     b.Property<Guid>("AccessId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("PermissionId", "AccessId");
 
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("AccessPermissions", (string)null);
-                });
-
-            modelBuilder.Entity("HierarchyDataAccessControl.Models.AccessPermissionType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AccessPermissionTypes", (string)null);
+                    b.ToTable("AccessPermission", (string)null);
                 });
 
             modelBuilder.Entity("HierarchyDataAccessControl.Models.HierarchyNode", b =>
@@ -118,7 +98,7 @@ namespace HierarchyDataAccessControl.Data.Migrations
 
                     b.HasIndex("HierarchyNodeId");
 
-                    b.ToTable("HierarchyNodePermissions", (string)null);
+                    b.ToTable("HierarchyNodePermission", (string)null);
                 });
 
             modelBuilder.Entity("HierarchyDataAccessControl.Models.HierarchyNodeType", b =>
@@ -176,14 +156,6 @@ namespace HierarchyDataAccessControl.Data.Migrations
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("HierarchyDataAccessControl.Models.AccessPermissionType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("HierarchyDataAccessControl.Models.HierarchyNode", b =>

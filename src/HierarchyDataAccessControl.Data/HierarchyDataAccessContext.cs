@@ -1,6 +1,7 @@
 ﻿using HierarchyDataAccessControl.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.CodeDom;
 using System.Xml.Linq;
 
 namespace HierarchyDataAccessControl.Data
@@ -10,6 +11,7 @@ namespace HierarchyDataAccessControl.Data
         public DbSet<HierarchyNode> Nodes { get; set; }
         public DbSet<HierarchyNodeType> Types { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<HierarchyNodePermission> Permissions { get; set; }
 
         public HierarchyDataAccessContext(DbContextOptions<HierarchyDataAccessContext> options) : base(options) { }
 
@@ -112,6 +114,51 @@ namespace HierarchyDataAccessControl.Data
             foreach (var child in node.ChildrenNodes)
             {
                 LoadChildrenNodes(child);
+            }
+        }
+
+        public IEnumerable<HierarchyNode> GetNodesHierarchicallyByNodeIdAndUserAccess(Guid hierarchyNodeId, Guid userId)
+        {
+            try
+            {
+                User? user = Users
+                    .AsNoTracking()
+                    .Include(u => u.Groups)
+                    .FirstOrDefault(u => u.Id == userId);
+
+                if (user is null)
+                {
+                    throw new Exception("User not found.");
+                }
+
+                IEnumerable<Guid> groupsIds = user!
+                    .Groups
+                    .Select(g => g.Id);
+
+                var userNodePermissions = Permissions
+                    .AsNoTracking()
+                    .Include(p => p.Accesess)
+                    .Where(p => p.Accesess.Any(a => a.AccessId == user.Id || groupsIds.Contains(a.AccessId)));
+
+                var nodes = Nodes
+                    .AsNoTracking()
+                    .Where(n => n.Id == hierarchyNodeId)
+                    .Join(
+                    userNodePermissions,
+                    o => o.Id,
+                    f => f.HierarchyNodeId,
+                    (node, permission) => node)
+                    .ToList();
+
+                // implement global and unique access
+                //Parallel.ForEach(nodes, n => LoadChildrenNodes(n));
+
+                return nodes;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 

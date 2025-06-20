@@ -42,7 +42,9 @@ namespace HierarchyDataAccessControl.Data.TypesConfiguration
                 .HasForeignKey(e => e.ParentId);
 
             builder
-                .Ignore(e => e.Permissions);
+                .HasMany(e => e.Permissions)
+                .WithOne()
+                .HasForeignKey(e => e.HierarchyNodeId);
         }
     }
 }

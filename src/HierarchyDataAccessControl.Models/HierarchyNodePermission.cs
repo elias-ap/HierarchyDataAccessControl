@@ -5,6 +5,6 @@
         public Guid Id { get; set; }
         public Guid HierarchyNodeId { get; set; }
         public string Value { get; set; }
-        public List<AccessPermission> Access { get; set; }
+        public List<AccessPermission> Accesess { get; set; }
     }
 }
