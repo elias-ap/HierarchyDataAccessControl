@@ -87,7 +87,7 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
-        public async Task<IEnumerable<HierarchyNode>> GetAllNodesHierarchically()
+        public async Task<IEnumerable<HierarchyNode>> GetAllNodesHierarchicallyAsync()
         {
             try
             {
@@ -96,7 +96,7 @@ namespace HierarchyDataAccessControl.Data
                     .Where(n => n.TypeId == 1)
                     .ToListAsync();
 
-                await Parallel.ForEachAsync(nodes, async (n, r) => await LoadChildrenNodesRecursively(n));
+                Parallel.ForEach(nodes, async (node) => await LoadChildrenNodesRecursivelyAsync(node));
 
                 return nodes;
 
@@ -107,7 +107,30 @@ namespace HierarchyDataAccessControl.Data
             }
         }
 
-        private async Task LoadChildrenNodesRecursively(HierarchyNode node)
+        public IEnumerable<HierarchyNode> GetAllNodesHierarchically()
+        {
+            try
+            {
+                var nodes = Nodes
+                    .AsNoTracking()
+                    .Where(n => n.TypeId == 1)
+                    .ToList();
+
+                foreach (var item in nodes)
+                {
+                    LoadChildrenNodesRecursively(item);
+                }
+
+                return nodes;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private async Task LoadChildrenNodesRecursivelyAsync(HierarchyNode node)
         {
             node.ChildrenNodes = await Nodes
                 .AsNoTracking()
@@ -115,9 +138,20 @@ namespace HierarchyDataAccessControl.Data
                 .Where(n => n.ParentId == node.Id)
                 .ToListAsync();
 
+            Parallel.ForEach(node.ChildrenNodes, async (n) => await LoadChildrenNodesRecursivelyAsync(n));
+        }
+
+        private void LoadChildrenNodesRecursively(HierarchyNode node)
+        {
+            node.ChildrenNodes = Nodes
+                .AsNoTracking()
+                .Include(n => n.Permissions)
+                .Where(n => n.ParentId == node.Id)
+                .ToList();
+
             foreach (var item in node.ChildrenNodes)
             {
-                await LoadChildrenNodesRecursively(item);
+                LoadChildrenNodesRecursively(item);
             }
         }
 
@@ -161,7 +195,7 @@ namespace HierarchyDataAccessControl.Data
 
                 if (globalPermission.Any())
                 {
-                    LoadChildrenNodesRecursively(node);
+                    LoadChildrenNodesRecursivelyAsync(node);
                 }
 
                 return node;
@@ -177,9 +211,9 @@ namespace HierarchyDataAccessControl.Data
         {
             try
             {
-                return Nodes
-                    .Add(node)
-                    .Entity;
+                node = Nodes.Add(node).Entity;
+                SaveChanges();
+                return node;
             }
             catch (Exception ex)
             {
